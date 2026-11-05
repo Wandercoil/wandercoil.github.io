@@ -172,14 +172,16 @@ section[id]{scroll-margin-top:68px}
 .venue img{width:100%;height:clamp(240px,42vw,460px);object-fit:cover;object-position:center 35%}
 .venue figcaption{position:absolute;left:12px;bottom:12px;right:12px;max-width:30rem;background:var(--navy);color:#fff;border-radius:14px;padding:14px 16px;font-weight:700;line-height:1.35}
 /* steps */
-.steps{display:grid;gap:18px}
-.step{background:#fff;border:1px solid var(--line);border-radius:20px;overflow:hidden;display:flex;flex-direction:column}
-.step .txt{padding:22px 22px 24px}
-.step .n{font:700 .82rem "Space Grotesk",sans-serif;color:var(--orange);display:block;margin-bottom:8px}
-.step p{color:var(--muted);font-size:.97rem;margin-top:8px}
-.step .shot{aspect-ratio:16/10;background:var(--navy);overflow:hidden;margin-top:auto}
-.step .shot img{width:100%;height:100%;object-fit:cover;object-position:top}
-@media(min-width:900px){.steps{grid-template-columns:repeat(3,1fr)}}
+.steps{display:grid;gap:44px}
+.step{display:grid;gap:20px;align-items:center}
+.step .n{font:700 .82rem "Space Grotesk",sans-serif;color:var(--orange);display:block;margin-bottom:10px}
+.step h3{font-size:clamp(1.45rem,3vw,2rem);letter-spacing:-.03em;line-height:1.12}
+.step p{color:var(--muted);margin-top:12px}
+.frame{margin:0;background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden;box-shadow:0 26px 50px -30px rgba(4,18,76,.55)}
+.frame img{width:100%;height:auto}
+.frame.phone{width:min(100%,330px);margin:auto;border:8px solid var(--navy);border-radius:34px}
+.shots-note{font-size:.84rem;color:var(--muted);margin:-16px 0 0}
+@media(min-width:900px){.steps{gap:72px}.step{grid-template-columns:.72fr 1.28fr;gap:56px}.step.flip .txt{order:2}.step.flip{grid-template-columns:1.28fr .72fr}.shots-note{margin:-40px 0 0}}
 
 /* privacy */
 .wash{background:var(--wash)}
@@ -371,9 +373,19 @@ footer a:hover{text-decoration:underline}
       <figcaption>Your laptop is the whole system. Guests just scan and search.</figcaption>
     </figure>
     <div class="steps">
-      <article class="step"><div class="txt"><span class="n">01 · Photographer</span><h3>Pick your event folder</h3><p>Lens It finds every face on your laptop. Choose when that face data deletes itself.</p></div><div class="shot"><img src="img/app-setup.webp" alt="Lens It event setup screen" loading="lazy"></div></article>
-      <article class="step"><div class="txt"><span class="n">02 · Venue</span><h3>Put up the QR poster</h3><p>Turn on your hotspot and print or display the poster. Guests join and scan it.</p></div><div class="shot"><img src="img/app-share.webp" alt="Printable QR poster screen" loading="lazy"></div></article>
-      <article class="step"><div class="txt"><span class="n">03 · Guest</span><h3>Selfie in, photos out</h3><p>After a short consent note, guests take a selfie, see watermarked previews and download their photos.</p></div><div class="shot"><img src="img/app-guest.webp" alt="Guest selfie page on a phone" loading="lazy"></div></article>
+      <article class="step">
+        <div class="txt"><span class="n">01 · Photographer</span><h3>Pick your event folder</h3><p>Name the event and choose the photo folder. Lens It finds every face on your laptop, and you choose when that face data deletes itself.</p></div>
+        <figure class="frame"><img src="img/app-setup.webp" alt="Lens It setup screen with event name, photo folder and when face data is deleted" width="1500" height="1008" loading="lazy"></figure>
+      </article>
+      <article class="step flip">
+        <div class="txt"><span class="n">02 · Venue</span><h3>Put up the QR poster</h3><p>Turn on your hotspot, then print or display the poster. Guests join the Wi-Fi and scan it.</p></div>
+        <figure class="frame"><img src="img/app-share.webp" alt="Lens It ready screen with a printable QR poster and event numbers" width="1500" height="1008" loading="lazy"></figure>
+      </article>
+      <article class="step">
+        <div class="txt"><span class="n">03 · Guest</span><h3>Selfie in, photos out</h3><p>After a short consent note, guests take a selfie, see watermarked previews and download their photos. No app, no account.</p></div>
+        <figure class="frame phone"><img src="img/app-guest.webp" alt="Guest results on a phone, with five watermarked photos found" width="780" height="1328" loading="lazy"></figure>
+      </article>
+      <p class="shots-note">App screens shown with sample data.</p>
     </div>
   </div>
 </section>
