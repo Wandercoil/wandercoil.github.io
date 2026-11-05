@@ -1,0 +1,517 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta property="og:title" content="Try Lens It in your browser">
+<meta property="og:description" content="Find yourself in your own photos with a selfie. Face matching runs in your browser; nothing is uploaded.">
+<meta property="og:image" content="https://wandercoil.github.io/lensit/icon-512.png">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#04124c">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<title>Try Lens It in your browser</title>
+<meta name="description" content="Find yourself in your own photos with a selfie. Face matching runs entirely in your browser, so nothing is uploaded.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#04124c;--orange:#b84a06;--orange-bright:#f87a1b;--orange-light:#ffb37d;--orange-wash:#fff3ec;--cream:#fef7f3;--ink:#222;--muted:#5b606b;--line:#e4e5e8;--green:#007a52;--blue-light:#eaf0ff;--white:#fff;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;font-family:"Plus Jakarta Sans",ui-sans-serif,system-ui,sans-serif;background:var(--cream);color:var(--ink);line-height:1.5}
+.wrap{max-width:1000px;margin:auto;padding:0 16px}
+header{background:rgba(255,255,255,.9);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-weight:800;font-size:1.25rem;color:var(--navy);text-decoration:none;letter-spacing:-.03em}.logo .wmark span{color:var(--orange)}
+header a.back{color:var(--muted);font-weight:600;text-decoration:none}
+.eyebrow{display:inline-block;font-size:.82rem;font-weight:700;color:var(--orange);background:var(--orange-wash);padding:6px 14px;border-radius:999px}
+h1{font-size:clamp(2rem,5vw,3rem);line-height:1.05;color:var(--navy);letter-spacing:-.03em;margin:16px 0 10px}
+.lead{color:var(--muted);font-size:1.05rem;max-width:640px;margin:0}
+.privacy{display:flex;gap:10px;flex-wrap:wrap;margin:20px 0 0}
+.privacy span{background:var(--white);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-weight:600;font-size:.88rem;color:var(--navy)}
+.privacy span::before{content:"✓ ";color:var(--green)}
+.card{background:var(--white);border:1px solid var(--line);border-radius:24px;padding:24px;margin-top:20px}
+.card.off{pointer-events:none}.card.off .btn,.card.off .agree,.card.off .bar{opacity:.45}.card.off .num{background:#9aa0aa}
+.head{display:flex;gap:14px;align-items:center}
+.num{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:var(--orange);color:#fff;font-weight:800;flex:none}
+.card h2{margin:0;color:var(--navy);font-size:1.25rem;letter-spacing:-.02em}
+.card p.sub{margin:4px 0 0;color:var(--muted);font-size:.92rem}
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:13px 22px;font-weight:700;border:0;font-size:1rem;cursor:pointer;font-family:inherit;background:var(--orange);color:#fff;margin-top:16px}
+.btn.navy{background:var(--navy)}
+.btn input{display:none}
+.bar{height:10px;background:var(--blue-light);border-radius:999px;overflow:hidden;margin-top:14px}
+.bar div{height:100%;width:0;background:var(--orange);transition:width .2s}
+.msg{margin-top:10px;font-weight:600;color:var(--navy);min-height:1.5em}
+.msg.err{color:var(--red)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px;margin-top:16px}
+.tile{position:relative;border-radius:16px;overflow:hidden;background:var(--blue-light);aspect-ratio:1;transition:opacity .3s,transform .3s,box-shadow .3s}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .badge{position:absolute;left:6px;bottom:6px;background:rgba(4,18,76,.8);color:#fff;font-size:.72rem;font-weight:700;padding:3px 8px;border-radius:999px}
+.tile.hit{box-shadow:0 0 0 3px var(--orange);transform:scale(1.02)}
+.tile.maybe{outline:3px dashed var(--orange);outline-offset:-3px}
+.tile.hit .badge{background:var(--orange)}
+.tile.dim{opacity:.25}
+.selfie{display:flex;gap:16px;align-items:center;flex-wrap:wrap;margin-top:12px}
+.btn.ghost{background:var(--white);color:var(--navy);border:1px solid var(--line)}
+.cam{display:none;margin-top:16px}
+.cam.on{display:block}
+.cam video{width:100%;max-width:420px;border-radius:20px;background:#000;transform:scaleX(-1);display:block}
+.camrow{display:flex;gap:10px;flex-wrap:wrap}
+.selfie img{width:96px;height:96px;object-fit:cover;border-radius:50%;border:3px solid var(--orange);display:none}
+.result{margin-top:16px;padding:16px;border-radius:18px;background:var(--navy);color:#fff;font-weight:700;display:none}
+.result small{display:block;color:var(--orange-light);font-weight:600}
+.roles{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:22px}
+.roles div{background:var(--white);border:1px solid var(--line);border-radius:18px;padding:14px 16px;font-size:.92rem;color:var(--muted)}
+.roles b{display:block;color:var(--navy);margin-bottom:4px}
+.role{display:inline-block;font-size:.72rem;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--orange);margin-bottom:2px}
+.role.guest{color:var(--green)}.card.off .role{color:#6b7280}
+.lock{margin:12px 0 0;font-size:.88rem;font-weight:600;color:var(--muted)}
+.card:not(.off) .lock{display:none}
+@media (max-width:640px){.roles{grid-template-columns:1fr}}
+.agree{display:flex;gap:10px;align-items:flex-start;margin-top:16px;font-size:.92rem;color:var(--ink);cursor:pointer;line-height:1.45}
+.agree input{width:20px;height:20px;accent-color:var(--orange);margin-top:1px;flex:none}
+.btn[aria-disabled=true]{opacity:.4;pointer-events:none}
+
+/* results (same design as the app's guest page) */
+.res{margin-top:18px}
+.summary{background:var(--cream);border-radius:20px;padding:18px}
+.summary .top{display:flex;align-items:center;gap:14px}
+.summary .count{width:56px;height:56px;border-radius:16px;background:var(--orange);color:#fff;display:grid;place-items:center;font-weight:800;font-size:1.5rem;flex:none}
+.summary h3{margin:0;color:var(--navy);font-size:1.2rem}
+.summary .sub2{margin:2px 0 0;color:var(--muted);font-size:.9rem}
+.summary .note2{margin:12px 0 0;font-size:.82rem;color:var(--muted)}
+.sec{display:flex;align-items:baseline;justify-content:space-between;gap:10px;margin:20px 2px 10px}
+.sec h4{margin:0;color:var(--navy);font-size:1rem}
+.sec span{color:var(--muted);font-size:.85rem}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ph{margin:0;position:relative;border-radius:16px;overflow:hidden;background:var(--blue-light);cursor:zoom-in}
+.ph img{width:100%;aspect-ratio:1;object-fit:cover;display:block}
+.ph .tag{position:absolute;left:8px;top:8px;background:rgba(29,31,32,.8);color:#fff;font-size:.72rem;font-weight:700;padding:4px 9px;border-radius:999px}
+.ph.sure .tag{background:var(--orange)}
+.ph .act{position:absolute;left:8px;right:8px;bottom:8px;display:flex;gap:6px}
+.ph .act button{flex:1;border:0;border-radius:999px;padding:7px 6px;font-weight:700;font-size:.78rem;cursor:pointer;font-family:inherit}
+.ph .yes{background:#fff;color:var(--navy)}.ph .no{background:rgba(29,31,32,.8);color:#fff}
+.ph.confirmed{box-shadow:0 0 0 3px var(--orange)}.ph.confirmed .act{display:none}
+.ph.removed{opacity:.35}.ph.removed .act .yes{display:none}
+.maybe-note{background:var(--cream);border-radius:12px;padding:10px 12px;font-size:.85rem;margin:0 0 10px}
+.viewer{position:fixed;inset:0;background:rgba(10,12,20,.92);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:16px;z-index:50}
+.viewer img{max-width:100%;max-height:72vh;border-radius:14px}
+.viewer .vbar{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap;justify-content:center}
+.viewer .nav,.viewer .close{position:absolute;width:44px;height:44px;border-radius:50%;border:0;background:rgba(255,255,255,.15);color:#fff;font-size:1.3rem;cursor:pointer}
+.viewer .nav{top:50%;transform:translateY(-50%)}.viewer .prev{left:10px}.viewer .next{right:10px}.viewer .close{top:14px;right:14px}
+.viewer .pos{color:rgba(255,255,255,.75);font-size:.85rem;margin-top:8px}
+.viewer .btn.ghost{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.3)}
+.hidden{display:none!important}
+.note{font-size:.85rem;color:var(--muted);margin-top:28px;padding-bottom:48px}
+.note a{color:var(--navy)}
+.logo{display:inline-flex;align-items:center;gap:10px}.logo .mark{width:30px;height:30px;flex:none}.logo .wmark span{color:var(--orange)}
+.wc{display:inline-flex;align-items:center;gap:12px;color:inherit;text-decoration:none;font-family:"Space Grotesk",ui-sans-serif,system-ui,sans-serif;font-weight:500;font-size:1rem;letter-spacing:.01em}.wc:hover{opacity:.85}.wc .wc-mark{width:32px;height:32px;flex:none}
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="./"><svg class="mark" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="16" fill="#04124c"/><path d="M17 27V47H37M47 37V17H27" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"/><circle cx="32" cy="32" r="6" fill="#f87a1b"/></svg><span class="wmark">Lens<span> It</span></span></a><a class="back" href="./">← Back to site</a></div></header>
+
+<main class="wrap">
+  <div style="padding-top:36px">
+    <span class="eyebrow">Try it yourself · real face matching</span>
+    <h1>Find yourself in your own photos.</h1>
+    <p class="lead">Add some photos from a party or trip, then take a selfie. Lens It finds every photo you're in using the same open-source models as the app, running <strong>inside your browser</strong>.</p>
+    <div class="roles">
+      <div><b>📸 At a real event</b>The photographer loads the photos on their laptop. Guests join the laptop's Wi-Fi, scan a QR code and snap a selfie on their phones.</div>
+      <div><b>🧪 On this page</b>You play both roles in one browser: first the photographer (step 1), then the guest (step 2). The face matching is exactly the same.</div>
+    </div>
+    <div class="privacy"><span>Nothing is uploaded</span><span>Works offline once loaded</span><span>Close the tab and it's gone</span></div>
+  </div>
+
+  <section class="card" id="c0">
+    <div class="head"><div class="num">0</div><div><span class="role">Setup · happens once</span><h2>Load the AI models</h2><p class="sub">About 38 MB, downloaded once and checked against a SHA-256 fingerprint.</p></div></div>
+    <div class="bar"><div id="mbar"></div></div>
+    <div class="msg" id="mmsg">Starting…</div>
+  </section>
+
+  <section class="card off" id="c1">
+    <div class="head"><div class="num">1</div><div><span class="role">You're the photographer</span><h2>Add event photos</h2><p class="sub">Select several photos at once (hold Ctrl on a laptop). Use 10–50 photos of people, ideally some with you in them and some without.</p></div></div>
+    <label class="agree"><input type="checkbox" id="agreeTry"><span>I have permission to use these photos, I'll only search with my own face, and I agree to the <a href="terms.html" target="_blank">Terms</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>. Nothing leaves this device.</span></label>
+    <label class="btn" id="choose" aria-disabled="true">📁 Choose photos<input type="file" id="photos" accept="image/*" multiple disabled></label>
+    <div class="bar"><div id="pbar"></div></div>
+    <div class="msg" id="pmsg"></div>
+    <div class="grid" id="grid"></div>
+  </section>
+
+  <section class="card off" id="c2">
+    <div class="head"><div class="num">2</div><div><span class="role guest">Now you're the guest</span><h2>Take a selfie</h2><p class="sub">Face the camera in good light. Use your webcam, or choose a clear photo of your face that isn't one of the event photos. Your selfie stays on this device.</p></div></div>
+    <p class="lock" id="lock">🔒 Unlocks after step 1 finds at least one face.</p>
+    <div class="selfie">
+      <button class="btn navy" id="camBtn" type="button">📸 Take a selfie</button>
+      <label class="btn ghost">🖼️ Choose a photo<input type="file" id="selfie" accept="image/*"></label>
+      <img id="sprev" alt="Your selfie">
+    </div>
+    <div class="cam" id="cam">
+      <video id="video" playsinline muted></video>
+      <div class="camrow">
+        <button class="btn" id="snap" type="button">● Capture</button>
+        <button class="btn ghost" id="camCancel" type="button">Cancel</button>
+      </div>
+    </div>
+    <div class="msg" id="smsg"></div>
+    <div class="result" id="result"></div>
+    <div class="res hidden" id="res">
+      <div class="summary">
+        <div class="top"><div class="count" id="rCount">0</div><div><h3 id="rFound"></h3><p class="sub2" id="rSub"></p></div></div>
+        <p class="note2">Matched entirely on this device. At a real event, guests download their full-quality photos from the photographer's laptop.</p>
+        <p class="note2">How did it go? <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new?template=feedback.yml" target="_blank" rel="noopener" data-feedback><b>Send feedback →</b></a> (please don't include photos)</p>
+      </div>
+      <div id="rSureBox"><div class="sec"><h4>Your photos</h4><span>Tap to view</span></div><div class="rgrid" id="rSure"></div></div>
+      <div id="rMaybeBox"><div class="sec"><h4>Maybe you?</h4><span id="rMaybeCount"></span></div>
+        <p class="maybe-note">Less certain matches. Tap <b>✓ Me</b> to keep one or <b>Not me</b> to hide it.</p>
+        <div class="rgrid" id="rMaybe"></div></div>
+    </div>
+  </section>
+
+  <p class="note">How it works: <strong>YuNet</strong> finds faces and <strong>SFace</strong> turns each one into 128 numbers. Faces are compared by cosine similarity (a match is ≥ 0.363, OpenCV's recommended threshold). Both models are Apache-2.0, from <a href="https://github.com/opencv/opencv_zoo">opencv_zoo</a>, and run with ONNX Runtime Web. Results can include misses, especially for side profiles, sunglasses or dark photos. <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new?template=feedback.yml" target="_blank" rel="noopener" data-feedback>Feedback</a> · No cookies.</p>
+  <p class="note" style="padding-bottom:40px;margin-top:-30px"><a class="wc" href="https://github.com/Wandercoil" title="Lens It is a Wandercoil product"><svg class="wc-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M18,16 L38,16 L38,50 L18,70 Z M102,104 L82,104 L82,70 L102,50 Z" fill="currentColor"/></svg><span>A Wandercoil Product</span></a></p>
+</main>
+
+<div class="viewer hidden" id="viewer" role="dialog" aria-label="Photo viewer">
+  <button class="close" id="vClose" type="button" aria-label="Close">✕</button>
+  <button class="nav prev" id="vPrev" type="button" aria-label="Previous">‹</button>
+  <img id="vImg" alt="Photo">
+  <button class="nav next" id="vNext" type="button" aria-label="Next">›</button>
+  <div class="pos" id="vPos"></div>
+  <div class="vbar"><button class="btn ghost" id="vMe" type="button">✓ This is me</button><a class="btn" id="vSave">⬇ Save this photo</a></div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/ort.min.js" integrity="sha384-4uQjzVxVRlLf2zq2sqRNKh3IzetqQzu15fI6xgLQzhXYGJMtTZc/fvdszanED0Zp" crossorigin="anonymous"></script>
+<script>
+const $ = id => document.getElementById(id);
+const MODELS = {
+  yunet: {url: 'models/yunet.onnx', sha: '8f2383e4dd3cfbb4553ea8718107fc0423210dc964f9f4280604804ed2552fa4'},
+  sface: {url: 'models/sface.onnx', sha: '0ba9fbfa01b5270c96627c4ef784da859931e02f04419c829e83484087c34e79'},
+};
+const IN = 640, MAX_SIDE = 2048, SCORE = 0.8, NMS = 0.3, MATCH = 0.363;
+// Same rules as the app: 36-45% shows as "Maybe", and a blurry or tiny selfie is refused.
+const STRONG = 0.45, MIN_SHARPNESS = 8, MIN_FACE_PX = 80;
+
+function sharpness(src, [x, y, w, h]) { // variance of the Laplacian on a 160px-wide grey face crop
+  const W = 160, H = Math.max(3, Math.round(160 * h / w)), c = document.createElement('canvas');
+  c.width = W; c.height = H; const ctx = c.getContext('2d'); ctx.drawImage(src, x, y, w, h, 0, 0, W, H);
+  const d = ctx.getImageData(0, 0, W, H).data, g = new Float32Array(W * H);
+  for (let i = 0; i < W * H; i++) g[i] = .299 * d[4 * i] + .587 * d[4 * i + 1] + .114 * d[4 * i + 2];
+  let n = 0, sum = 0, sq = 0;
+  for (let yy = 1; yy < H - 1; yy++) for (let xx = 1; xx < W - 1; xx++) {
+    const i = yy * W + xx, v = g[i - 1] + g[i + 1] + g[i - W] + g[i + W] - 4 * g[i];
+    n++; sum += v; sq += v * v;
+  }
+  return sq / n - (sum / n) ** 2;
+}
+// Reference landmark positions for a 112x112 aligned face (from OpenCV's FaceRecognizerSF).
+const DST = [[38.2946, 51.6963], [73.5318, 51.5014], [56.0252, 71.7366], [41.5493, 92.3655], [70.7299, 92.2041]];
+let det, rec;
+const index = []; // {tile, embeddings: Float32Array[]}
+
+ort.env.wasm.wasmPaths = 'https://cdn.jsdelivr.net/npm/onnxruntime-web@1.19.2/dist/';
+ort.env.wasm.numThreads = 1;
+ort.env.logLevel = 'error'; // SFace's old-style graph triggers harmless warnings
+
+const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
+
+async function fetchModel(m, onBytes) {
+  const r = await fetch(m.url);
+  if (!r.ok) throw new Error('Could not download ' + m.url);
+  const reader = r.body.getReader(), parts = [];
+  for (;;) { const {done, value} = await reader.read(); if (done) break; parts.push(value); onBytes(value.length); }
+  const buf = await new Blob(parts).arrayBuffer();
+  if (hex(await crypto.subtle.digest('SHA-256', buf)) !== m.sha) throw new Error(m.url + ' failed its integrity check, so it was refused.');
+  return buf;
+}
+
+async function loadModels() {
+  const total = 38.5e6; let got = 0;
+  const tick = n => { got += n; $('mbar').style.width = Math.min(100, 100 * got / total) + '%'; $('mmsg').textContent = `Downloading… ${(got / 1e6).toFixed(1)} MB`; };
+  try {
+    const [y, s] = await Promise.all([fetchModel(MODELS.yunet, tick), fetchModel(MODELS.sface, tick)]);
+    $('mmsg').textContent = 'Verified ✓ Starting the models…';
+    det = await ort.InferenceSession.create(y, {executionProviders: ['wasm']});
+    rec = await ort.InferenceSession.create(s, {executionProviders: ['wasm']});
+    $('mbar').style.width = '100%';
+    $('mmsg').textContent = '✓ Models ready and verified. You can turn off your internet now if you like.';
+    $('c1').classList.remove('off');
+  } catch (e) { $('mmsg').textContent = e.message; $('mmsg').classList.add('err'); }
+}
+
+/* ---------- image helpers ---------- */
+async function toCanvas(file, maxSide = MAX_SIDE) {
+  const bmp = await createImageBitmap(file, {imageOrientation: 'from-image'});
+  const s = Math.min(1, maxSide / Math.max(bmp.width, bmp.height));
+  const c = document.createElement('canvas');
+  c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s);
+  c.getContext('2d').drawImage(bmp, 0, 0, c.width, c.height);
+  bmp.close();
+  return c;
+}
+
+
+/* ---------- YuNet face detection ---------- */
+// YuNet sees a 640x640 view. Small faces (group shots, full-body photos) vanish when a whole photo is
+// shrunk to 640, so we also scan overlapping tiles at higher resolution and merge the results.
+async function detectRegion(src, sx, sy, sw, sh) {
+  const s = IN / Math.max(sw, sh);
+  const c = document.createElement('canvas'); c.width = c.height = IN;
+  const ctx = c.getContext('2d'); ctx.fillStyle = '#000'; ctx.fillRect(0, 0, IN, IN);
+  ctx.drawImage(src, sx, sy, sw, sh, 0, 0, Math.round(sw * s), Math.round(sh * s));
+  const px = ctx.getImageData(0, 0, IN, IN).data, n = IN * IN, x = new Float32Array(3 * n);
+  for (let i = 0; i < n; i++) { x[i] = px[4 * i + 2]; x[n + i] = px[4 * i + 1]; x[2 * n + i] = px[4 * i]; } // BGR planes
+  const out = await det.run({input: new ort.Tensor('float32', x, [1, 3, IN, IN])});
+  const faces = [];
+  for (const st of [8, 16, 32]) {
+    const cols = IN / st, cls = out['cls_' + st].data, obj = out['obj_' + st].data, bb = out['bbox_' + st].data, kp = out['kps_' + st].data;
+    for (let i = 0; i < cls.length; i++) {
+      const score = Math.sqrt(Math.min(1, Math.max(0, cls[i])) * Math.min(1, Math.max(0, obj[i])));
+      if (score < SCORE) continue;
+      const r = Math.floor(i / cols), col = i % cols;
+      const cx = (col + bb[4 * i]) * st, cy = (r + bb[4 * i + 1]) * st, w = Math.exp(bb[4 * i + 2]) * st, h = Math.exp(bb[4 * i + 3]) * st;
+      const lm = [];
+      for (let k = 0; k < 5; k++) lm.push([sx + (kp[10 * i + 2 * k] + col) * st / s, sy + (kp[10 * i + 2 * k + 1] + r) * st / s]);
+      faces.push({score, box: [sx + (cx - w / 2) / s, sy + (cy - h / 2) / s, w / s, h / s], lm});
+    }
+  }
+  return faces;
+}
+
+function overlaps(a, b) { // IoU, or mostly-contained (a face cut at a tile edge)
+  const ix = Math.max(0, Math.min(a[0] + a[2], b[0] + b[2]) - Math.max(a[0], b[0]));
+  const iy = Math.max(0, Math.min(a[1] + a[3], b[1] + b[3]) - Math.max(a[1], b[1]));
+  const i = ix * iy;
+  return i / (a[2] * a[3] + b[2] * b[3] - i) >= NMS || i / Math.min(a[2] * a[3], b[2] * b[3]) > 0.6;
+}
+
+function rotated(src, deg) { // rotate a canvas by any angle, growing it so nothing is cut off
+  const r = deg * Math.PI / 180, cos = Math.abs(Math.cos(r)), sin = Math.abs(Math.sin(r));
+  const c = document.createElement('canvas');
+  c.width = Math.round(src.width * cos + src.height * sin); c.height = Math.round(src.width * sin + src.height * cos);
+  const ctx = c.getContext('2d'); ctx.translate(c.width / 2, c.height / 2); ctx.rotate(r); ctx.drawImage(src, -src.width / 2, -src.height / 2);
+  return c;
+}
+
+// The detector copes with tilts of about +/-30 degrees, so these steps find a face at any angle.
+const ROTATIONS = [90, -90, 180, 45, -45, 135, -135];
+
+// Find faces upright first; if none, try the photo turned. Each face remembers which canvas it was found on.
+async function detectAnyAngle(src, fine = false) {
+  let faces = await detect(src, fine);
+  if (faces.length) return faces.map(f => ({...f, src}));
+  for (const deg of ROTATIONS) {
+    const r = rotated(src, deg);
+    faces = await detect(r, fine);
+    if (faces.length) return faces.map(f => ({...f, src: r}));
+  }
+  return [];
+}
+
+async function detect(src, fine = false) {
+  const W = src.width, H = src.height, faces = await detectRegion(src, 0, 0, W, H);
+  if (Math.max(W, H) > 900) {
+    // Normal: 3x3 tiles of ~45% of the long side. Fine (one selfie, slower): full-resolution 640px tiles.
+    const T = fine ? IN : Math.round(Math.max(W, H) * 0.45);
+    const pos = d => {
+      if (d <= T) return [0];
+      const n = Math.max(3, Math.ceil((d - T) / (T * 0.75)) + 1); // ~25% overlap
+      return Array.from({length: n}, (_, i) => Math.round(i * (d - T) / (n - 1)));
+    };
+    for (const y of pos(H)) for (const x of pos(W)) faces.push(...await detectRegion(src, x, y, Math.min(T, W), Math.min(T, H)));
+  }
+  faces.sort((a, b) => b.score - a.score);
+  const keep = [];
+  for (const f of faces) if (keep.every(k => !overlaps(f.box, k.box))) keep.push(f);
+  return keep;
+}
+
+/* ---------- SFace embedding ---------- */
+function similarity(src) { // least-squares similarity transform src -> DST
+  const ms = [0, 0], md = [0, 0];
+  for (let i = 0; i < 5; i++) { ms[0] += src[i][0] / 5; ms[1] += src[i][1] / 5; md[0] += DST[i][0] / 5; md[1] += DST[i][1] / 5; }
+  let num = 0, a = 0, b = 0;
+  for (let i = 0; i < 5; i++) {
+    const px = src[i][0] - ms[0], py = src[i][1] - ms[1], qx = DST[i][0] - md[0], qy = DST[i][1] - md[1];
+    num += px * px + py * py; a += px * qx + py * qy; b += px * qy - py * qx;
+  }
+  a /= num; b /= num;
+  return [a, b, md[0] - (a * ms[0] - b * ms[1]), md[1] - (b * ms[0] + a * ms[1])];
+}
+
+async function embed(src, lm) {
+  const [a, b, tx, ty] = similarity(lm);
+  const c = document.createElement('canvas'); c.width = c.height = 112;
+  const ctx = c.getContext('2d');
+  ctx.setTransform(a, b, -b, a, tx, ty);
+  ctx.drawImage(src, 0, 0);
+  const px = ctx.getImageData(0, 0, 112, 112).data, n = 112 * 112, x = new Float32Array(3 * n);
+  for (let i = 0; i < n; i++) { x[i] = px[4 * i]; x[n + i] = px[4 * i + 1]; x[2 * n + i] = px[4 * i + 2]; } // RGB planes
+  const f = (await rec.run({data: new ort.Tensor('float32', x, [1, 3, 112, 112])})).fc1.data;
+  let norm = 0; for (const v of f) norm += v * v; norm = Math.sqrt(norm);
+  return Float32Array.from(f, v => v / norm);
+}
+
+const cosine = (u, v) => { let s = 0; for (let i = 0; i < u.length; i++) s += u[i] * v[i]; return s; };
+
+/* ---------- step 1: index photos ---------- */
+$('photos').onchange = async e => {
+  const files = [...e.target.files]; if (!files.length) return;
+  $('c2').classList.add('off'); $('pmsg').classList.remove('err');
+  let faces = 0;
+  for (let i = 0; i < files.length; i++) {
+    $('pmsg').textContent = `Finding faces… photo ${i + 1} of ${files.length}`;
+    $('pbar').style.width = (100 * i / files.length) + '%';
+    try {
+      const c = await toCanvas(files[i]);
+      const found = await detectAnyAngle(c);
+      const embeddings = [];
+      for (const f of found) embeddings.push(await embed(f.src, f.lm));
+      faces += embeddings.length;
+      const tile = document.createElement('div'); tile.className = 'tile';
+      const img = new Image(); img.src = c.toDataURL('image/jpeg', .7); img.alt = files[i].name;
+      tile.append(img);
+      const badge = document.createElement('span'); badge.className = 'badge'; badge.textContent = `${embeddings.length} face${embeddings.length === 1 ? '' : 's'}`;
+      tile.append(badge);
+      $('grid').append(tile);
+      index.push({tile, badge, embeddings, file: files[i], thumb: img.src});
+    } catch { /* skip unreadable files */ }
+  }
+  $('pbar').style.width = '100%';
+  $('pmsg').textContent = `✓ ${index.length} photos, ${faces} faces found. Add more photos, or take a selfie below.`;
+  if (faces) { $('c2').classList.remove('off'); $('c2').scrollIntoView({behavior: 'smooth', block: 'start'}); } // next step: the selfie
+  e.target.value = '';
+};
+
+/* ---------- step 2: selfie search ---------- */
+$('selfie').onchange = async e => {
+  const file = e.target.files[0]; if (!file) return;
+  e.target.value = '';
+  search(await toCanvas(file, 3200));
+};
+
+// Webcam selfie (laptops ignore the camera hint on file inputs, so use the camera directly).
+let stream = null;
+function stopCam() { if (stream) stream.getTracks().forEach(t => t.stop()); stream = null; $('cam').classList.remove('on'); }
+$('camBtn').onclick = async () => {
+  $('smsg').classList.remove('err');
+  try {
+    stream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'user', width: {ideal: 1280}}, audio: false});
+    $('video').srcObject = stream; await $('video').play();
+    $('cam').classList.add('on'); $('smsg').textContent = 'Look at the camera, then press Capture.';
+    $('cam').scrollIntoView({behavior: 'smooth', block: 'center'}); // bring the camera and Capture button into view
+  } catch {
+    $('smsg').textContent = "Couldn't open the camera. Allow camera access, or use \"Choose a photo\" instead."; $('smsg').classList.add('err');
+  }
+};
+$('camCancel').onclick = () => { stopCam(); $('smsg').textContent = ''; };
+$('snap').onclick = () => {
+  const v = $('video'), c = document.createElement('canvas');
+  c.width = v.videoWidth; c.height = v.videoHeight;
+  c.getContext('2d').drawImage(v, 0, 0);
+  stopCam(); // the camera turns off immediately; the frame never leaves this page
+  search(c);
+};
+
+async function search(c) {
+  $('smsg').classList.remove('err'); $('smsg').textContent = 'Looking for you…'; $('result').style.display = 'none'; $('res').classList.add('hidden');
+  let found = await detectAnyAngle(c);
+  if (!found.length) { $('smsg').textContent = 'Looking closer for a small face…'; found = (await detect(c, true)).map(f => ({...f, src: c})); }
+  $('sprev').src = c.toDataURL('image/jpeg', .7); $('sprev').style.display = 'block';
+  if (!found.length) { $('smsg').textContent = 'No face found. Try again facing the camera in better light.'; $('smsg').classList.add('err'); return; }
+  const biggest = found.reduce((a, b) => a.box[2] * a.box[3] > b.box[2] * b.box[3] ? a : b);
+  if (biggest.box[2] * Math.min(1, 1280 / Math.max(biggest.src.width, biggest.src.height)) < MIN_FACE_PX) {
+    $('smsg').textContent = 'Your face is too small in the photo. Get closer and try again.'; $('smsg').classList.add('err'); return;
+  }
+  if (sharpness(biggest.src, biggest.box) < MIN_SHARPNESS) {
+    $('smsg').textContent = 'Your selfie is too blurry. Hold still in good light and try again.';
+    $('smsg').classList.add('err'); return;
+  }
+  const me = await embed(biggest.src, biggest.lm);
+  // Preview zooms in on the face that was used, so the guest can see what was matched.
+  const [bx, by, bw, bh] = biggest.box, pad = Math.max(bw, bh) * 0.6, side = Math.max(bw, bh) + 2 * pad;
+  const pv = document.createElement('canvas'); pv.width = pv.height = 192;
+  pv.getContext('2d').drawImage(biggest.src, bx + bw / 2 - side / 2, by + bh / 2 - side / 2, side, side, 0, 0, 192, 192);
+  $('sprev').src = pv.toDataURL('image/jpeg', .8);
+  let closest = -1;
+  let hits = 0, maybes = 0; const matched = [];
+  for (const p of index) {
+    const best = p.embeddings.reduce((m, v) => Math.max(m, cosine(me, v)), -1);
+    const hit = best >= MATCH, sure = best >= STRONG;
+    hits += sure; maybes += hit && !sure; closest = Math.max(closest, best);
+    if (hit) matched.push({p, best, sure});
+    p.tile.classList.toggle('hit', sure); p.tile.classList.toggle('maybe', hit && !sure); p.tile.classList.toggle('dim', !hit);
+    p.badge.textContent = sure ? `Match ${(best * 100).toFixed(0)}%` : hit ? `Maybe ${(best * 100).toFixed(0)}%` : `${p.embeddings.length} face${p.embeddings.length === 1 ? '' : 's'}`;
+  }
+  $('smsg').textContent = '';
+  $('result').style.display = 'block';
+  $('result').innerHTML = hits || maybes
+    ? `<small>Done, entirely on this device</small>` + (hits ? `Found you in ${hits} of ${index.length} photos 🎉` : 'No sure matches.') + (maybes ? ` ${maybes} more might be you (dashed outline): check them.` : '')
+    : `<small>Done, entirely on this device · closest was ${Math.max(0, closest * 100).toFixed(0)}% (a match needs ${MATCH * 100 | 0}%)</small>No matches. Try a close-up, front-facing selfie in good light.`;
+  renderResults(matched);
+}
+
+// Warn before a reload or close wipes the photos (nothing is stored, so they can't be restored).
+addEventListener('beforeunload', e => { if (index.length) { e.preventDefault(); e.returnValue = ''; } });
+
+$('agreeTry').onchange = e => {
+  $('photos').disabled = !e.target.checked;
+  $('choose').setAttribute('aria-disabled', !e.target.checked);
+};
+
+
+/* ---------- results UI ---------- */
+let RES = [], viewing = 0;
+function rSummary() {
+  const sure = RES.filter(r => r.sure).length, keep = RES.filter(r => r.kept === true).length;
+  const left = RES.filter(r => !r.sure && r.kept == null).length;
+  $('rCount').textContent = keep;
+  $('rFound').textContent = sure ? `Found you in ${sure} photo${sure > 1 ? 's' : ''}` : `${RES.length} photo${RES.length > 1 ? 's' : ''} might be you`;
+  $('rSub').textContent = `${keep} confirmed` + (left ? ` · ${left} to check below` : '') + ` · out of ${index.length} photos`;
+  $('rMaybeCount').textContent = left ? `${left} to check` : '';
+}
+function rCard(r, k) {
+  const f = document.createElement('figure'); f.className = 'ph ' + (r.sure ? 'sure' : 'maybe');
+  f.innerHTML = `<img alt="Matched photo" src="${r.p.thumb}"><span class="tag">${r.sure ? '✓ You' : 'Maybe ' + Math.round(r.best * 100) + '%'}</span>`;
+  if (!r.sure) {
+    const a = document.createElement('div'); a.className = 'act';
+    a.innerHTML = '<button class="yes" type="button">✓ Me</button><button class="no" type="button">Not me</button>';
+    a.querySelector('.yes').onclick = e => { e.stopPropagation(); r.kept = true; f.classList.add('confirmed'); f.classList.remove('removed'); f.querySelector('.tag').textContent = '✓ You'; rSummary(); };
+    a.querySelector('.no').onclick = e => { e.stopPropagation(); const off = f.classList.toggle('removed'); r.kept = off ? false : null; e.target.textContent = off ? 'Undo' : 'Not me'; rSummary(); };
+    f.append(a); r.fig = f;
+  }
+  f.onclick = () => { viewing = k; vShow(); $('viewer').classList.remove('hidden'); };
+  return f;
+}
+function renderResults(found) {
+  found.sort((a, b) => b.best - a.best);
+  RES = found.map(r => ({...r, kept: r.sure ? true : null}));
+  $('rSure').innerHTML = ''; $('rMaybe').innerHTML = '';
+  RES.forEach((r, k) => (r.sure ? $('rSure') : $('rMaybe')).append(rCard(r, k)));
+  $('rSureBox').classList.toggle('hidden', !RES.some(r => r.sure));
+  $('rMaybeBox').classList.toggle('hidden', RES.every(r => r.sure));
+  $('res').classList.toggle('hidden', !RES.length);
+  if (RES.length) { $('result').style.display = 'none'; rSummary(); $('res').scrollIntoView({behavior: 'smooth'}); }
+}
+function vShow() {
+  const r = RES[viewing];
+  $('vImg').src = r.p.thumb;
+  $('vPos').textContent = `${viewing + 1} of ${RES.length} · ${r.sure ? 'sure match' : 'maybe'} · ${Math.round(r.best * 100)}%`;
+  const mine = r.kept === true;
+  $('vMe').classList.toggle('hidden', mine);
+  $('vSave').classList.toggle('hidden', !mine);
+  if (mine && r.p.file) { $('vSave').href = URL.createObjectURL(r.p.file); $('vSave').download = r.p.file.name; }
+}
+$('vMe').onclick = () => { const r = RES[viewing]; if (r.fig) r.fig.querySelector('.yes').click(); vShow(); };
+$('vClose').onclick = () => $('viewer').classList.add('hidden');
+$('vPrev').onclick = () => { viewing = (viewing - 1 + RES.length) % RES.length; vShow(); };
+$('vNext').onclick = () => { viewing = (viewing + 1) % RES.length; vShow(); };
+$('viewer').onclick = e => { if (e.target.id === 'viewer') $('viewer').classList.add('hidden'); };
+addEventListener('keydown', e => { if ($('viewer').classList.contains('hidden')) return;
+  if (e.key === 'Escape') $('vClose').onclick(); if (e.key === 'ArrowLeft') $('vPrev').onclick(); if (e.key === 'ArrowRight') $('vNext').onclick(); });
+
+loadModels();
+</script>
+<script src="feedback.js" defer></script>
+</body>
+</html>
