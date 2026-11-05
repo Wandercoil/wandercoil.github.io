@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="fonts.css">
 <meta property="og:title" content="Try Lens It in your browser">
 <meta property="og:description" content="Find yourself in your own photos with a selfie. Face matching runs in your browser; nothing is uploaded.">
 <meta property="og:image" content="https://wandercoil.github.io/lensit/icon-512.png">
@@ -13,9 +14,6 @@
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Try Lens It in your browser</title>
 <meta name="description" content="Find yourself in your own photos with a selfie. Face matching runs entirely in your browser, so nothing is uploaded.">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500&display=swap" rel="stylesheet">
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
 <style>
 :root{--navy:#04124c;--orange:#b84a06;--orange-bright:#f87a1b;--orange-light:#ffb37d;--orange-wash:#fff3ec;--cream:#fef7f3;--ink:#222;--muted:#5b606b;--line:#e4e5e8;--green:#007a52;--blue-light:#eaf0ff;--white:#fff;--red:#b42318}
 *{box-sizing:border-box}
@@ -142,7 +140,8 @@ h1{font-weight:800;letter-spacing:-.04em;line-height:1.04;font-size:clamp(2.4rem
   <section class="card" id="c0">
     <div class="head"><div class="num">0</div><div><span class="role">Setup · happens once</span><h2>Load the AI models</h2><p class="sub">About 38 MB, downloaded once and checked against a SHA-256 fingerprint.</p></div></div>
     <div class="bar"><div id="mbar"></div></div>
-    <div class="msg" id="mmsg">Starting…</div>
+    <button class="btn navy" type="button" id="loadBtn" style="margin-top:14px">Load the AI (38 MB)</button>
+    <div class="msg" id="mmsg">Nothing has downloaded yet. On mobile data, this uses about 38 MB.</div>
   </section>
 
   <section class="card off" id="c1">
@@ -251,7 +250,7 @@ async function loadModels() {
     $('mbar').style.width = '100%';
     $('mmsg').textContent = '✓ Models ready and verified. You can turn off your internet now if you like.';
     $('c1').classList.remove('off');
-  } catch (e) { $('mmsg').textContent = e.message; $('mmsg').classList.add('err'); }
+  } catch (e) { $('mmsg').textContent = e.message; $('mmsg').classList.add('err'); $('loadBtn').classList.remove('hidden'); }
 }
 
 /* ---------- image helpers ---------- */
@@ -525,7 +524,7 @@ $('viewer').onclick = e => { if (e.target.id === 'viewer') $('viewer').classList
 addEventListener('keydown', e => { if ($('viewer').classList.contains('hidden')) return;
   if (e.key === 'Escape') $('vClose').onclick(); if (e.key === 'ArrowLeft') $('vPrev').onclick(); if (e.key === 'ArrowRight') $('vNext').onclick(); });
 
-loadModels();
+$('loadBtn').onclick = () => { $('loadBtn').classList.add('hidden'); $('mmsg').textContent = 'Starting…'; loadModels(); };
 </script>
 <script src="feedback.js" defer></script>
 </body>
