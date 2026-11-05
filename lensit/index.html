@@ -71,6 +71,9 @@ header{position:sticky;top:0;z-index:20;background:rgba(254,247,243,.92);backdro
 .ctas{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px;justify-content:center;width:100%}
 .ctas .btn{flex:1 1 200px}
 @media(min-width:560px){.ctas .btn{flex:0 0 auto}}
+#demo{scroll-margin-top:78px}
+.phone-only{display:none!important}
+@media(max-width:759px){.desk-only{display:none!important}.phone-only{display:inline-flex!important}}
 .stage{position:relative;border-radius:26px 26px 0 0;padding:130px 10px 0;overflow:hidden;background:var(--navy);isolation:isolate}
 .stage::before{content:"";position:absolute;inset:0 0 auto;aspect-ratio:16/9;z-index:-1;background:linear-gradient(180deg,rgba(4,18,76,.05) 45%,var(--navy) 98%),url(img/ai-hero.webp) center top/cover}
 @media(min-width:760px){.stage{padding:clamp(240px,27vw,350px) 56px 0}}
@@ -214,6 +217,7 @@ section[id]{scroll-margin-top:68px}
 .dusk h2{color:#fff}.dusk .lead{color:#dfe4f5}.dusk .label{color:var(--peach)}
 .dusk .tbl{border-color:transparent}
 /* compare */
+.vh{color:transparent;user-select:none}
 .tbl{background:#fff;border:1px solid var(--line);border-radius:18px;overflow:hidden}
 .row{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:10px;padding:14px;border-top:1px solid var(--line);font-size:.9rem;line-height:1.35;align-items:center}
 .row:first-child{border-top:0;background:var(--navy);color:#fff;font-weight:700}
@@ -241,6 +245,13 @@ section[id]{scroll-margin-top:68px}
 .install li p{color:var(--muted);font-size:.97rem;margin-top:4px}
 kbd{font:600 .86em "Space Grotesk",sans-serif;background:var(--wash);border-radius:5px;padding:1px 6px;color:var(--navy)}
 .dl small{display:block;color:var(--muted);font-size:.88rem;margin-top:14px}
+.trust{margin-top:24px;padding:18px;border-radius:16px;background:var(--wash)}
+.trust p{color:var(--muted);font-size:.93rem;margin-top:8px}
+.trust kbd{overflow-wrap:anywhere;background:#fff}
+.send{margin-top:20px;flex-direction:column;align-items:flex-start;gap:10px}
+.send p{font-size:.95rem;color:var(--muted)}
+.send .btn{width:100%}
+.send span{font-size:.9rem;color:var(--green);font-weight:700}
 
 /* faq */
 .faq{border-top:1px solid var(--line);max-width:860px}
@@ -293,11 +304,12 @@ footer a:hover{text-decoration:underline}
     <p class="lead">Guests scan a QR code, take a selfie and see their photos in seconds. It all runs on your laptop, so it works at any venue, even with no internet.</p>
     <div class="ctas">
       <a class="btn primary" href="try.html">Try it with your photos</a>
-      <a class="btn ghost" href="#install">Download for Windows</a>
+      <a class="btn ghost desk-only" href="#install">Download for Windows</a>
+      <a class="btn ghost phone-only" href="#demo">See the demo</a>
     </div>
   </div>
   <div class="wrap">
-    <div class="stage">
+    <div class="stage" id="demo">
       <div class="app" aria-label="Interactive demo of the Lens It interface, with AI-generated guests">
         <aside class="side">
           <div class="side-brand"><img src="logo-dark.svg" alt="" width="26" height="26">Lens It</div>
@@ -316,7 +328,7 @@ footer a:hover{text-decoration:underline}
           <div class="pane" id="v-photos" hidden>
             <div class="f-head"><strong>16 event photos</strong><span>Sample set</span></div>
             <div class="wall open" id="allPhotos"></div>
-            <div class="f-foot"><b>Faces found on your laptop</b><small>AI-generated demo photos</small></div>
+            <div class="f-foot"><b>Faces found on your laptop</b><small>Scripted demo · AI-generated photos</small></div>
           </div>
           <div class="pane" id="v-poster" hidden>
             <div class="f-head"><strong>Print or display your poster</strong><span>App screen</span></div>
@@ -331,7 +343,7 @@ footer a:hover{text-decoration:underline}
             <div class="f-head"><strong>Who's looking for their photos?</strong><span>Tap a guest</span></div>
             <div class="chips" id="chips"></div>
             <div class="wall" id="wall"><div class="scan"></div></div>
-            <div class="f-foot" aria-live="polite"><b id="result">Finding photos…</b><small>AI-generated demo photos</small></div>
+            <div class="f-foot" aria-live="polite"><b id="result">Finding photos…</b><small>Scripted demo · AI-generated photos</small></div>
           </div>
         </div>
       </div>
@@ -421,7 +433,7 @@ footer a:hover{text-decoration:underline}
       <p class="lead">Halls on the edge of town, church grounds, gardens at night. Lens It keeps working.</p>
     </div>
     <div class="tbl" role="table" aria-label="Lens It compared with cloud photo search">
-      <div class="row" role="row"><span role="columnheader"></span><span role="columnheader">Lens It</span><span role="columnheader">Cloud search</span></div>
+      <div class="row" role="row"><span role="columnheader" class="vh">Feature</span><span role="columnheader">Lens It</span><span role="columnheader">Cloud search</span></div>
       <div class="row" role="row"><span role="cell">Weak or no network</span><span class="y" role="cell">Still works</span><span role="cell">Needs internet</span></div>
       <div class="row" role="row"><span role="cell">Guest's mobile data</span><span class="y" role="cell">Not used to search</span><span role="cell">Used to upload a selfie</span></div>
       <div class="row" role="row"><span role="cell">Where faces go</span><span class="y" role="cell">Your laptop only</span><span role="cell">Someone else's server</span></div>
@@ -459,6 +471,16 @@ footer a:hover{text-decoration:underline}
         <a class="btn ghost" href="https://github.com/Wandercoil/wandercoil.github.io/releases/latest">Release notes</a>
       </div>
       <small>Free · about 100 MB · Windows 10/11</small>
+      <div class="send phone-only">
+        <p><b>On your phone?</b> Lens It runs on a Windows laptop. Send yourself this link for later.</p>
+        <button class="btn ghost" type="button" id="sendLink">Send link to my laptop</button>
+        <span id="sendMsg" role="status"></span>
+      </div>
+      <div class="trust">
+        <h3>Why Windows warns you</h3>
+        <p>Lens It isn't code-signed yet, so Windows may say "Windows protected your PC". That warning is about unknown publishers, so only install a copy from this page.</p>
+        <p>To check your copy, run <kbd>Get-FileHash .\LensIt.exe</kbd> in PowerShell and compare it with the SHA-256 in the <a href="https://github.com/Wandercoil/wandercoil.github.io/releases/latest">release notes</a>.</p>
+      </div>
     </div>
     <ol>
       <li><span>1</span><div><h3>Download</h3><p>Only get <kbd>LensIt.exe</kbd> from this page or our official releases page.</p></div></li>
@@ -564,6 +586,17 @@ document.querySelectorAll('.item').forEach(btn => btn.onclick = () => {
   Object.keys(views).forEach(k => { document.getElementById('v-' + k).hidden = k !== v; });
   document.getElementById('crumb').textContent = views[v];
 });
+// send the page to the photographer's laptop
+document.getElementById('sendLink').onclick = async () => {
+  const url = location.origin + location.pathname, msg = document.getElementById('sendMsg');
+  try {
+    if (navigator.share) { await navigator.share({title: 'Lens It', text: 'Lens It for my laptop', url}); return; }
+    await navigator.clipboard.writeText(url);
+    msg.textContent = 'Link copied. Paste it into a message to yourself.';
+  } catch (e) {
+    if (e.name !== 'AbortError') msg.textContent = url;
+  }
+};
 // close the phone menu after choosing a link
 document.querySelectorAll('#menu a').forEach(a => a.addEventListener('click', () => { document.getElementById('menu').open = false; }));
 if (!still) auto = setInterval(() => find((current + 1) % GUESTS.length), 5000);
