@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://wandercoil.github.io/sitemap.xml
