@@ -43,7 +43,7 @@
     <div class="wrap contact">
       <div class="rv">
         <span class="label">Contact</span>
-        <h2 id="contact-h">Work with us.</h2>
+        <h1 class="h2" id="contact-h">Work with us.</h1>
         <p>Partners, press, photographers or anyone with a good idea can reach the team directly. We read every message.</p>
         <div class="routes" style="margin-top:34px">
           <a href="/lensit/"><b>Photographers</b><span>Use Lens It at your next event</span><i aria-hidden="true">→</i></a>
@@ -64,7 +64,7 @@
         <label class="field"><span class="label">Message</span><textarea name="message" rows="6" maxlength="3000" required></textarea></label>
         <p class="cerr" id="cerr" role="alert" hidden>Please write a message first.</p>
         <button class="btn fill" type="submit">Send message <span class="arr" aria-hidden="true">→</span></button>
-        <p class="cnote">Sending opens your email app with your message ready to go. Nothing is stored on this website. No email app? <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new/choose" target="_blank" rel="noopener">Use our feedback form on GitHub</a>.</p>
+        <p class="cnote">Sending opens your email app with your message ready to go. Nothing is stored on this website.<span id="ghalt"> No email app? <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new/choose" target="_blank" rel="noopener">Use our feedback form on GitHub</a>.</span></p>
       </form>
     </div>
   </section>
@@ -74,11 +74,11 @@
   <div class="wrap">
     <div class="fgrid">
       <div class="about"><img src="assets/logo-white.svg" alt="WANDERCOIL" width="495" height="81" loading="lazy"><p>Creative technology and culture. Parent company of the WANDERCOIL Independent Game Studio and WANDERCOIL Lab.</p></div>
-      <div><h4>Divisions</h4><ul><li><a href="/divisions">Independent Game Studio</a></li><li><a href="/divisions">WANDERCOIL Lab</a></li><li><a href="/lensit/">Lens It</a></li></ul></div>
-      <div><h4>Company</h4><ul><li><a href="/about">About</a></li><li><a href="/news">News</a></li><li><a href="/contact">Contact</a></li></ul></div>
-      <div><h4>Legal</h4><ul><li><a href="/lensit/privacy">Privacy</a></li><li><a href="/lensit/terms">Terms</a></li><li><a href="/security">Security</a></li></ul></div>
+      <div><p class="fh">Divisions</p><ul><li><a href="/divisions">Independent Game Studio</a></li><li><a href="/divisions">WANDERCOIL Lab</a></li><li><a href="/lensit/">Lens It</a></li></ul></div>
+      <div><p class="fh">Company</p><ul><li><a href="/about">About</a></li><li><a href="/news">News</a></li><li><a href="/contact">Contact</a></li></ul></div>
+      <div><p class="fh">Legal</p><ul><li><a href="/lensit/privacy">Privacy</a></li><li><a href="/lensit/terms">Terms</a></li><li><a href="/security">Security</a></li></ul></div>
     </div>
-    <div class="legal"><span>© 2026 WANDERCOIL. All rights reserved.</span><a href="#top">Back to top ↑</a></div>
+    <div class="legal"><span>© 2026 WANDERCOIL. All rights reserved.</span><a class="totop" href="#top">Back to top ↑</a></div>
   </div>
 </footer>
 
@@ -86,6 +86,11 @@
 <script>
 (() => {
   const f = document.getElementById('cform'); if (!f) return;
+  const alt = document.getElementById('ghalt');
+  const want = new URLSearchParams(location.search).get('topic');
+  [...f.topic].forEach(r => { if (r.value === want) r.checked = true; });
+  const sync = () => { alt.hidden = f.topic.value !== 'Feedback'; };
+  [...f.topic].forEach(r => r.addEventListener('change', sync)); sync();
   const to = () => String.fromCharCode(...[114,111,114,122,104,114,111,120,122,100,103,100,117,100,118,108,112,108].map(c => c - 3)) + '@' + 'gmail.com';
   f.addEventListener('submit', e => {
     e.preventDefault();
