@@ -13,7 +13,7 @@
 <link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <title>Try Lens It in your browser</title>
-<link rel="canonical" href="https://wandercoil.github.io/lensit/try.html">
+<link rel="canonical" href="https://wandercoil.github.io/lensit/try">
 <meta name="description" content="Find yourself in your own photos with a selfie. Face matching runs entirely in your browser, so nothing is uploaded.">
 <style>
 :root{--navy:#04124c;--orange:#b84a06;--orange-bright:#f87a1b;--orange-light:#ffb37d;--orange-wash:#fff3ec;--cream:#fef7f3;--ink:#222;--muted:#5b606b;--line:#e4e5e8;--green:#007a52;--blue-light:#eaf0ff;--white:#fff;--red:#b42318}
@@ -147,7 +147,7 @@ h1{font-weight:800;letter-spacing:-.04em;line-height:1.04;font-size:clamp(2.4rem
 
   <section class="card off" id="c1">
     <div class="head"><div class="num">1</div><div><span class="role">You're the photographer</span><h2>Add event photos</h2><p class="sub">Select several photos at once (hold Ctrl on a laptop). Use 10–50 photos of people, ideally some with you in them and some without.</p></div></div>
-    <label class="agree"><input type="checkbox" id="agreeTry"><span>I have permission to use these photos, I'll only search with my own face, and I agree to the <a href="terms.html" target="_blank">Terms</a> and <a href="privacy.html" target="_blank">Privacy Policy</a>. Nothing leaves this device.</span></label>
+    <label class="agree"><input type="checkbox" id="agreeTry"><span>I have permission to use these photos, I'll only search with my own face, and I agree to the <a href="terms" target="_blank">Terms</a> and <a href="privacy" target="_blank">Privacy Policy</a>. Nothing leaves this device.</span></label>
     <label class="btn" id="choose" aria-disabled="true">📁 Choose photos<input type="file" id="photos" accept="image/*" multiple disabled></label>
     <div class="bar"><div id="pbar"></div></div>
     <div class="msg" id="pmsg"></div>
@@ -184,7 +184,7 @@ h1{font-weight:800;letter-spacing:-.04em;line-height:1.04;font-size:clamp(2.4rem
     </div>
   </section>
 
-  <p class="note">How it works: <strong>YuNet</strong> finds faces and <strong>SFace</strong> turns each one into 128 numbers. Faces are compared by cosine similarity (a match is ≥ 0.363, OpenCV's recommended threshold). Both models are Apache-2.0, from <a href="https://github.com/opencv/opencv_zoo">opencv_zoo</a>, and run with ONNX Runtime Web. Results can include misses, especially for side profiles, sunglasses or dark photos. <a href="privacy.html">Privacy</a> · <a href="terms.html">Terms</a> · <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new?template=feedback.yml" target="_blank" rel="noopener" data-feedback>Feedback</a> · No cookies.</p>
+  <p class="note">How it works: <strong>YuNet</strong> finds faces and <strong>SFace</strong> turns each one into 128 numbers. Faces are compared by cosine similarity (a match is ≥ 0.363, OpenCV's recommended threshold). Both models are Apache-2.0, from <a href="https://github.com/opencv/opencv_zoo">opencv_zoo</a>, and run with ONNX Runtime Web. Results can include misses, especially for side profiles, sunglasses or dark photos. <a href="privacy">Privacy</a> · <a href="terms">Terms</a> · <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new?template=feedback.yml" target="_blank" rel="noopener" data-feedback>Feedback</a> · No cookies.</p>
   <p class="note" style="padding-bottom:40px;margin-top:-30px"><a class="wc" href="https://github.com/Wandercoil" title="Lens It is a Wandercoil product"><svg class="wc-mark" viewBox="0 0 120 120" aria-hidden="true"><path d="M18,16 L38,16 L38,50 L18,70 Z M102,104 L82,104 L82,70 L102,50 Z" fill="currentColor"/></svg><span>A Wandercoil Product</span></a></p>
 </main>
 
