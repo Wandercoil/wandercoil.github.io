@@ -1,7 +1,9 @@
-/* Lens It feedback pop-up. Nothing is sent from this page: "Send" opens the public GitHub feedback
-   form with the answers filled in, and the visitor submits it there. No tracking, no cookies. */
+/* Lens It feedback pop-up. Nothing is sent from this page: "Send" opens the visitor's own email app
+   with the answers filled in, and they send it from there. No tracking, no cookies, no third party.
+   The address is assembled at send time so it never appears in the page source. */
 (() => {
-  const FORM = 'https://github.com/Wandercoil/wandercoil.github.io/issues/new';
+  const GH = 'https://github.com/Wandercoil/wandercoil.github.io/issues/new?template=feedback.yml';
+  const to = () => String.fromCharCode(...[114,111,114,122,104,114,111,120,122,100,103,100,117,100,118,108,112,108].map(c => c - 3)) + '@' + 'gmail.com';
   const WHO = ['Photographer / event organiser', 'Guest at an event', 'Just trying the website', 'Developer'];
   const WHERE = ['The "Try it" page on the website', 'The Windows app (LensIt.exe)', 'The guest page on my phone at an event', 'Just reading the website'];
   const RATING = ['1 - Not useful', '2 - Not really', '3 - OK', '4 - Useful', '5 - Love it'];
@@ -60,11 +62,11 @@
         <label class="chk"><input type="checkbox" id="fb-ok"><span>I haven't included any photos, faces or other people's personal details.</span></label>
         <p class="err" id="fb-err"></p>
         <div class="row"><button class="b no" type="button" id="fb-cancel">Cancel</button><button class="b go" type="button" id="fb-send">Send feedback →</button></div>
-        <p class="note">"Send" opens our public feedback page on GitHub with your answers filled in. Press <b>Submit</b> there (a free GitHub account is needed). Nothing is sent from this page.</p>
+        <p class="note">"Send" opens your email app with your answers ready to go. Nothing is sent from this page. No email app? <a href="${GH}" target="_blank" rel="noopener">Use our public form on GitHub</a>.</p>
       </div>
       <div class="done" id="fb-done" hidden>
         <div class="big">🙏</div><h3>Thank you!</h3>
-        <p class="lead">Your answers are open in a new tab on GitHub. Press <b>Submit new issue</b> there to send them.</p>
+        <p class="lead">Your email app should now be open with your answers. Press <b>Send</b> there to send them.</p>
         <div class="row" style="justify-content:center"><button class="b go" type="button" id="fb-close">Close</button></div>
       </div>
     </div>`;
@@ -86,12 +88,12 @@
       if (!$('fb-where').value) return err('Please choose where you used Lens It.');
       if (!rating) return err('Please give a star rating.');
       if (!$('fb-ok').checked) return err('Please tick the privacy box.');
-      const q = new URLSearchParams({
-        template: 'feedback.yml', title: `[Feedback] ${RATING[rating - 1].slice(4)} · ${$('fb-where').value}`.slice(0, 120),
-        who: $('fb-who').value, where: $('fb-where').value, rating: RATING[rating - 1],
-        good: $('fb-good').value.slice(0, 2000), bad: $('fb-bad').value.slice(0, 2000), wish: $('fb-wish').value.slice(0, 2000),
-      });
-      window.open(`${FORM}?${q}`, '_blank', 'noopener');
+      const t = id => $(id).value.trim().slice(0, 1500) || '-';
+      const subject = `Lens It feedback: ${RATING[rating - 1].slice(4)}`;
+      const body = [`I am a: ${$('fb-who').value}`, `Where: ${$('fb-where').value}`, `Rating: ${RATING[rating - 1]}`, '',
+        `What worked well:\n${t('fb-good')}`, '', `What went wrong or was confusing:\n${t('fb-bad')}`, '',
+        `What Lens It should do next:\n${t('fb-wish')}`].join('\n');
+      location.href = `mailto:${to()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
       $('fb-form').hidden = true; $('fb-done').hidden = false; $('fb-close').focus();
     };
     $('fb-who').focus();
