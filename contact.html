@@ -44,14 +44,28 @@
       <div class="rv">
         <span class="label">Contact</span>
         <h2 id="contact-h">Work with us.</h2>
-        <p>Partners, press, photographers or anyone with a good idea can reach the team directly.</p>
-        <a class="btn fill" href="https://github.com/Wandercoil" target="_blank" rel="noopener">Follow WANDERCOIL <span class="arr" aria-hidden="true">→</span></a>
+        <p>Partners, press, photographers or anyone with a good idea can reach the team directly. We read every message.</p>
+        <div class="routes" style="margin-top:34px">
+          <a href="/lensit/"><b>Photographers</b><span>Use Lens It at your next event</span><i aria-hidden="true">→</i></a>
+          <a href="/security"><b>Security</b><span>Report a vulnerability privately</span><i aria-hidden="true">→</i></a>
+        </div>
       </div>
-      <div class="routes rv d1">
-        <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new/choose" target="_blank" rel="noopener"><b>Partnerships &amp; press</b><span>Send the team a message</span><i aria-hidden="true">→</i></a>
-        <a href="/lensit/"><b>Photographers</b><span>Use Lens It at your next event</span><i aria-hidden="true">→</i></a>
-        <a href="/security"><b>Security</b><span>Report a vulnerability</span><i aria-hidden="true">→</i></a>
-      </div>
+      <form class="cform rv d1" id="cform" novalidate>
+        <fieldset>
+          <legend class="label">What's it about?</legend>
+          <div class="topics">
+            <label><input type="radio" name="topic" value="Feedback" checked><span>Feedback</span></label>
+            <label><input type="radio" name="topic" value="Partnership"><span>Partnership</span></label>
+            <label><input type="radio" name="topic" value="Press"><span>Press</span></label>
+            <label><input type="radio" name="topic" value="Something else"><span>Something else</span></label>
+          </div>
+        </fieldset>
+        <label class="field"><span class="label">Your name <em>(optional)</em></span><input name="name" autocomplete="name" maxlength="80"></label>
+        <label class="field"><span class="label">Message</span><textarea name="message" rows="6" maxlength="3000" required></textarea></label>
+        <p class="cerr" id="cerr" role="alert" hidden>Please write a message first.</p>
+        <button class="btn fill" type="submit">Send message <span class="arr" aria-hidden="true">→</span></button>
+        <p class="cnote">Sending opens your email app with your message ready to go. Nothing is stored on this website. No email app? <a href="https://github.com/Wandercoil/wandercoil.github.io/issues/new/choose" target="_blank" rel="noopener">Use our feedback form on GitHub</a>.</p>
+      </form>
     </div>
   </section>
 </main>
@@ -69,5 +83,20 @@
 </footer>
 
 <script src="assets/site.js" defer></script>
+<script>
+(() => {
+  const f = document.getElementById('cform'); if (!f) return;
+  const to = () => String.fromCharCode(...[114,111,114,122,104,114,111,120,122,100,103,100,117,100,118,108,112,108].map(c => c - 3)) + '@' + 'gmail.com';
+  f.addEventListener('submit', e => {
+    e.preventDefault();
+    const d = new FormData(f), msg = (d.get('message') || '').trim(), name = (d.get('name') || '').trim();
+    const err = document.getElementById('cerr');
+    if (!msg) { err.hidden = false; f.message.focus(); return; }
+    err.hidden = true;
+    const subject = `WANDERCOIL website: ${d.get('topic')}` + (name ? ` from ${name}` : '');
+    location.href = `mailto:${to()}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(msg + (name ? `\n\n${name}` : ''))}`;
+  });
+})();
+</script>
 </body>
 </html>
